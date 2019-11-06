@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+spec:
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: basic-auth
+  labels:
+    app: basic-auth
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: basic-auth
+    template:
+      metadata:
+        labels:
+	  app: basic-auth
+      spec:
+        containers:
+	- name: nginx
+	  image: "gihyodocker/nginx:label"
+	  imagePullPolicy: Always
+	  ports:
+	    - name: http
+	      containerPort: 80
+	  env:
+	    - name: BACKEND_HOST
+	      value: "localhost:8080"
+	    - name: BASIC_AUTH_FILE
+	      value: "/etc/nginx/secret/.htpasswd"
+	  volumeMounts:
+	   - mountPath: /etc/nginx/secret
+	   name: nginx-secret
+	   readOnly: true
+        - name: echo
+	  image: "gihyodocker/echo:latest"
+	  imagePullPolicy: Always
+	  ports:
+	   - containerPort: 8080
+	volumes:
+	-name: nginx-secret
+	  secret:
+	    secretName: nginx-secret
