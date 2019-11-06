@@ -85,5 +85,34 @@ describe p
 
 kubectl api-versions
 
+gcloud components update
+gcloud auth login
+gclound config set project gihyo-kube-xxxx
+gclound config set compute/zone asia-northeast1-a
+gclound container clusters create gihyo --cluster-version=1.10-gke.2 \
+	--machine-type=n1-standard-1 \
+	--num-nodes=3
+
+gcloud container clusters clusters get-credentials gihyo
+kubectl get nodes
+kubectl proxy
+kubectx docker-for-desktop
+kubectx -
+kubens kube-system
+kubectl get pod
+
+kubectl apply -f storage-class-ssd.yaml
+
+kubectl apply -f mysql-master.yaml
+
+
+kubectl apply -f mysql-slave.yaml
+kubectl get pod
+kubectl exec -it mysql-master-0 init-data.sh
+kubectl exec -it mysql-slave-0 bash
+
+mysql -u root -pgihyo tododb -e "SHOW TABLES;";
+
+
 
 
