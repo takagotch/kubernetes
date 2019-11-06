@@ -236,5 +236,36 @@ helm serve &
 helm create echo
 tree .
 
+helm package echo
+helm serach echo
+
+helm install -f echo.yaml --name echo local/echo
+kubectl get deployment,service, ingress --selector app=echo
+curl http://localhost -H 'Host: ch06-echo.gihyo.local'
+
+
+git clone git@github.com:gihyodocker/charts.git
+cd charts
+mkdir stable
+helm create example
+helm package example
+helm repo index .
+tree .
+git add -A
+git commit -m "add first chart"
+git push origin gh-pages
+curl -s https://gihyodocker.github.io/charts/stable/index.yaml
+helm repo add gihyo-stable https://gihyodocker.github.io/charts/stable
+helm repo update
+helm search example
+helm install --namespace default --name example gihyo-stable/example
+
+kubectl logs -f update-checker
+kubectl patch deployment echo-version \
+	-p '{"spec":{"template":{"containers":[{"name":"echo-version", "image":"gihyodocker/echo-version:0.2.0"}]}}}'
+
+kubectl get pod -l app=echo-version -w
+
+
 
 
