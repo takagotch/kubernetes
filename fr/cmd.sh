@@ -81,5 +81,9 @@ docker image build -t ch04/nginx:latest .
 
 kubectl get pod -l app=nginx -w
 
+describe p
+
+kubectl api-versions
+
 
 
