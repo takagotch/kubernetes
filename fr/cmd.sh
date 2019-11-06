@@ -26,6 +26,60 @@ kubectl logs -f simple-echo -c echo
 kubectl delete pod simple-echo
 kubectl delete -f simple-pod.yaml
 
+kubectl delete -f simple-replicaset.yaml
+
+kubectl apply -f simple-deployment.yaml --record
+kubectl get pod,replicaset, deployment --selector app=echo
+kubectl rollout history deployment echo
+kubectl apply -f simple-deployment.yaml --record
+
+kubectl get pod
+kubectl rollout history deployment echo
+kubectl apply -f simple-deployment.yaml --record
+kubectl get pod --selector app=echo
+kubectl rollout historydeployment echo
+kubectl rollout history deployment echo --revision=1
+kubectl rollout undo deployment echo
+kubectl delete -f simple-deployment.yaml
+
+
+kubectl apply -f simple-replicaset-with-label.yaml
+kubectl get pod -l app=echo -l release=spring
+kubectl get pod -l app=echo -l release=summer
+
+kubectl apply -f simple-service.yaml
+kubectl get svc echo
+kubectl run -i --rm --tty debug --image=gihyodocker/fundamental:0.1.0 --restart=Never -- bash -11
+kubectl logs -f echo-summer-dtblk -c echo
+
+curl http://echo.default.svc.local
+curl http://echo.default
+curl http://echo
+
+kubectl get svc echo
+curl http://127.0.0.1:31058
+
+kubctl apply -f \
+	https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.16.2/deploy/mandatory.yaml
+kubctl -n ingress-nginx get service,pod
+
+
+kubectl apply -f simple-service.yaml
+
+kubectl apply -f simple-ingress.yaml
+curl http://localhost -H 'Host: ch05.gihyo.local'
+
+curl http://localhost \
+	 -H 'Host: cho05.giyo.local' \
+	 -H 'User-Agent: Mozilla/5.0 (iPhone; CPU iPhone 05 11_0 like Mac OS X)a
+AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.a' 
+
+kubectl apply -f https://raw.githubusecontent.com/kubernetes/minikube/master/deploy/addons/freshpod/freshpod-rc.yaml
+
+kubectl get pod -l app=nginx -w
+docker image build -t ch04/nginx:latest .
+
+kubectl get pod -l app=nginx -w
 
 
 

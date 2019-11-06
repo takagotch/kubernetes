@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: echo
+spec:
+  selector:
+    app: echo
+    release: summer
+  ports:
+   - name: http
+     port: 80
+
+// External Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: gihyo
+spec:
+  type: ExternalName
+  externalName: gihyo.jp
+
+//
+apiVersion: v1
+kind: Service
+metadata: 
+  name: echo
+spec:
+  selector:
+    app: echo
+  ports:
+   - name: http
+     port: 80
+
+
+//
+
