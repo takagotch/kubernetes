@@ -116,6 +116,16 @@ mysql -u root -pgihyo tododb -e "SHOW TABLES;";
 kubectl apply -f todo-api.yaml
 kubectl get pod -l app=todoapi
 
+
+
+
+
+
+
+
+
+
+// local commit
 <<<<<<< HEAD
 kubectl apply -f todo-web.yaml
 cp -R /todoweb/.nuxt/dist /
@@ -158,7 +168,19 @@ kubectl apply -f echo-version-green.yaml
 
 kubectl logs -f update-checker
 kubectl patch service echo-version -p '{"spec": {"selector": {"color": "green"}}}'
+
+
+
+
+
+
+
+
+
+
+// remote repository commit
 =======
+
 kubectl apply -f simple-jog.yaml
 kubectl logs -l app=pingpong
 kubectl get pod -l app=pingpong --show-all
@@ -223,7 +245,7 @@ cat <<EOF | kubectl apply -f -
 apiVersion: v1
 metadata:
   name: gihyo-pod-reader
-  namespace: kube-system
+namespace: kube-system
 EOF
 
 cat <<EOF | kubectl apply -f -
@@ -312,6 +334,8 @@ kubectl patch deployment echo-version \
 kubectl get pod -l app=echo-version -w
 
 
->>>>>>> origin/master
+>>>>>>> origin/master // local remote repository conflict all.
+
+//
 
 
