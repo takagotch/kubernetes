@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: high-cpu-job
+  labels:
+    app: high-cpu-jog
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app:high-cpu-job
+    template:
+      metadata:
+        labels:
+	  app: high-cpu-job
+    spec: 
+      affinity:
+        nodeAffinity:
+	  requireDuringSchedulingIgnoredDuringExecution:
+	    nodSelectorTerms:
+	    - matchExpressions:
+	      -key: instancegroup
+	        operator: In
+		values:
+		- "batch"
+      containers:
+      - name: high-cpu-jog
+        image: example/high-cpu-jog:latest
+
+

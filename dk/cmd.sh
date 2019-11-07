@@ -59,6 +59,19 @@ docker system prune -a
 
 kubectl get pod
 
+kubectl label nodes-batch1 instancegroup=batch
+
+kubectl get hpa
+gcloud container clusters create gihyo --cluster-version=1.9.7-gke.1 \
+	--machine-type=n1-standard-1 \
+	--num-nodes=5 \
+	--enable-autoscaling \
+	--min-nodes 3 \
+	--max-nodes 10
+
+helm install --namespace kube-system --name cluster-autoscaler stable/cluster-autoscaler
+kubectl -n kube-system get configmap
+helm init --history-max 20
 
 
 

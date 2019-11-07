@@ -44,3 +44,61 @@ spec:
         image: gihyodocker/echo:latest
 	ports:
 	- containerPort: 8080
+
+// spec.affinity.podAntiAffinity
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo
+  labels:
+    app: echo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: echo
+  template:
+    metadata:
+      labels:
+        app: echo
+    spec;
+      affinity:
+        podAntiAffinity:
+	  requiredDuringSchedulingIgnoreDuringExecution:
+	  - labelSelector:
+	    matchExpressions:
+	    - key: app
+	      operator: In
+	      values:
+	      - echo
+	  topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: nginx
+        image: gihyodocker/nginx:latest
+	env:
+	- name: BACKEND_HOST
+	  value: localhost:8080
+	ports:
+	- containerPort: 80
+      - name: echo
+        image: gihyodocker/echo:latest
+	ports:
+	- containerPort: 8080
+
+// Horizontal Pod Autoscaler manifest file
+apiVersion: autoscalling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: echo
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v
+    kind: Deployment
+    name: echo
+  miniReplicas: 1
+  maxReplicas: 3
+  -type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 40
+
