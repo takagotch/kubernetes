@@ -113,6 +113,49 @@ kubectl exec -it mysql-slave-0 bash
 
 mysql -u root -pgihyo tododb -e "SHOW TABLES;";
 
+kubectl apply -f todo-api.yaml
+kubectl get pod -l app=todoapi
 
+kubectl apply -f todo-web.yaml
+cp -R /todoweb/.nuxt/dist /
+ls -l /dist
+ls -l /var/www/_nuxt/
+
+kubectl get svc todoweb
+kubectl apply -f ingress.yaml
+kubectl get ingress
+
+ssh-keygen -t rsa
+echo "ssh-rsa xxxx" >> ~/.ssh/authorized_keys
+echo "ssh-rsa xxxx" >> ~/.ssh/authorized_keys
+echo "ssh-rsa xxxx" >> ~/.ssh/authorized_keys
+echo "ssh-rsa xxxx" >> ~/.ssh/authorized_keys
+
+sysctl -w net.ipv4.ip_forward=1
+pip install ansible netaddr
+git clone https://github.com/kubernetes-incubator/kuberspray
+cd kuberspray && git checkout v2.5.0
+
+pip install -r requirements.txt
+cp -rfp inventory/sample inventory/mycluster
+declare -a IPS=(10.90.65.11.10.90.65.12 10.90.65.13 10.90.65.21)
+CONFIG_FILE=inventory/mycluster/hosts.ini python3
+contrib/inventroy_builder/inventory.py ${IPS[@]}
+
+ansible-playbook -i inventory/mycluster/hosts.ini cluster.yml
+get nodes
+
+kubectl describe pod -l app=echo-version
+kubectl get pod app=echo-version
+kubectl get pod -l app=echo-version
+
+
+kubectl logs -f update-checker
+
+kubectl apply -f echo-version-blue.yaml
+kubectl apply -f echo-version-green.yaml
+
+kubectl logs -f update-checker
+kubectl patch service echo-version -p '{"spec": {"selector": {"color": "green"}}}'
 
 
