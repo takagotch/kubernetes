@@ -1,0 +1,18 @@
+replicaCount: 1
+nginx:
+  image:
+    repository: gihyodocker/nginx
+    tag: latest
+    pullPolicy: Always
+  healthCheck: /
+  backendHost: localhost:8080
+echo:
+  image:
+    repository: gihyodocker/echo
+    tag: latest
+    pullPolicy: Always
+  httpPort: 8080
+
+
+
+

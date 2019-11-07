@@ -1,6 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
+<<<<<<< HEAD
   name: ingress
 spec:
   rules:
@@ -10,4 +11,16 @@ spec:
       backend:
         serviceName: todoweb
 	servicePort: 80
+=======
+  name: echo
+spec:
+  rules:
+  - host: ch06-echo.gihyo.local
+  http:
+    paths:
+    - backend:
+      serviceName: echo
+      servicePort: 80
+ 
+>>>>>>> origin/master
 

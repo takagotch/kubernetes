@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadataa;
+  name: {{ template "echo.fullname
+  " . }}
+  labels:
+    app: {{ template "echo.name" . }}
+    chart: {{ template "echo.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Value.service.externalPort }}
+  ports:
+   - port: {{ .Values.service.externalPort }}
+     targetPort: http
+     protocol: TCP
+     name: {{ .Values.service.name }}
+   selector:
+   app: {{ template "echo.name" . }}
+   release: {{ .Release.Name }}
+
+

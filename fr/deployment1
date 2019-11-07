@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "echo.fullname" . }}
+  labels:
+    app: {{ template "echo.name" . }}
+    chart: {{ template "echo.chart" . }}
+    release: {{ .Release.Nmae }}
+    heritage: {{ .Release.Service  }}
+spec:
+  replicas: {{ .Values.replicaCunt }}
+  selector:
+    matchLabels:
+      app: {{ template "echo.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "echo.name" . }}
+	release: {{ .Release.Name }}
+      spec:
+        containers:
+	- name: nginx
+	  image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
+	  imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+	  ports:
+	   - name: http
+	     containerPort:80
+	 #ports:
+	 # - name: http
+	 #   containerPort: {{ .Values.nginx.port \ default "80" }}
+	  livenessProbe:
+	    httpGet:
+	      path: {{ .Values.nginx.healthCheck }}
+	      port: 80
+	  readinesssProbe:
+	    httpGet:
+	      path: { .VAlues.nginx.healthCheck }}
+	      port: 80
+	  env:
+	    - name: BACKEND_HOST
+	    value: {{ .Value.nginx.backendHost | quote }}
+	- name: echo
+	  image: "gihyodocker/echo:latest"
+	  imagePullPolicy: Always
+	  ports:
+	    - containerPort: 8080
+	  env:
+	    - name: HTTP_PORT
+	      value: "8080"
+        - name: echo
+	  image: "{{ .Values.echo.image.repository }}:{{ .Values.echo.image.tag }}"
+	  imagePullPolicy: {{ .Values.echo.image.pullPolicy }}
+	  ports:
+	   - containerPort: {{ .Values.echo.httpPort }}
+	  env:
+	   - name: HTTP_PORT
+	     value: {{ .Values.echo.httpPort | quote }}
+	  resources:
+{{ toYaml .Values.resources | indent 12 }}
+  {{- with .Values.nodeSelector }}
+    nodeSelector:
+{{ toYaml . | indent 8 }}
+ {{- end }}
+ {{- with .Values.affinity }}
+   affinity:
+{{ toYaml . | indent 8 }}
+  {{- end }}
+  {{- with .Values.tolerations }}
+{{ toYaml . | indent 8 }}
+  {{- end }}
+
