@@ -1,0 +1,16 @@
+{
+  "max-concurrent-downloads": 5
+}
+
+{
+  "max-concurrent-uplods": 8
+}
+
+{
+  "registry-mirrors" : [
+    "http://localhost:5000"
+  ]
+}
+
+
+

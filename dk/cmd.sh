@@ -25,6 +25,40 @@ curl http://localhost:24220/api/plugins
 
 kubectl apply -f elasticsearch.yaml
 
+kubectl apply -f kibana.yaml
+curl http://localhost:30050
+
+kubectl apply -f fluentd-daemonset.yaml
+kubectl -n kube-system get pod -l app=fluentd-logging
+kubectl apply -f echo.yaml
+curl http://localhost:30080
+
+kubectl -n kube-system get daemonset,pod -l k8s-app=fluentd-gcp
+stern -l app=echo
+stern -l app=todoweb --context gke_gihyo-kube-xxxx_asia-northeast1-a_gihyo
+
+systemctl daemon-reload
+service docker restart
+ps -A | grep docker
+service docker container stop
+ps - A | grep docker
+
+docker image pull ubuntu:18.04
+docker iamge pull ubuntu:18.04
+
+docker container run -d -p 5000:5000 \
+	-v ${PWD}/config.yml:/etc/docker/registry/config.yml registry: 2.6
+curl http://localhost:5000/v2/_catalog
+docker image pull redis
+curl http://localshot:5000/v2/_catalog
+
+
+container-structure-test test --image gihyodocker/tododb:latest --config test-tododb.yaml
+
+docker system prune -a
+
+kubectl get pod
+
 
 
 
