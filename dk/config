@@ -19,4 +19,63 @@ health:
 proxy:
   remoteurl: https://registry-1.docker.io
 
+//CircleCI
+version: 2
+jogs:
+  build:
+    working_directory: /go/src/github.com/gihyodocker/echo-version
+    docker:
+     - image: golang:1.9-alpine
+    steps:
+     - checkout
+     - run:
+       name: test
+       command: go test
+     - run: 
+       name: build 
+       command: go build -o bin/echo-version main.go
+     - persist_to_workspace:
+       root: .
+       paths:
+        - .
+
+// workflows
+version: 2
+jobs:
+  docker_build_push:
+    working_directory: /go/src/github.com/gihyodocker/echo-version
+    docker:
+     - image: docker:18.05.0-ce-dind
+    steps:
+     - attach_workspace:
+       at: .
+     - setup_remote_docker:
+       version: 18.05.0-ce
+     - run: docker image build
+       name: docker image build
+       command: docker image build -t gihyodocker/echo-version:latest .
+     - run: 
+       name: show docker image ls
+       command: docker image ls
+     - run: # DockerHub login
+       name: docker login
+       command: docker login -u $DOCKER_USER -p $DOCKER_PASS
+     - run:
+       name: release latest
+       command: docker image push gihyodocker/echo-version:latest
+
+//
+workflows:
+  version: 2
+  build_and_push:
+    jogs:
+     - build
+     - docker_build_push:
+       requires:
+        - build
+       filters:
+         branches:
+	   only: master
+
+
 

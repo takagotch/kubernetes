@@ -136,5 +136,103 @@ COPY --from=build /go/src/github.com/gihyodocker/todoapi/bin/todoapi /usr/loca/b
 CMD ["todoapi"]
 
 //
+FROM ubunt:16.04
+
+RUN apt -y update
+RUN apt -y install net-tools \
+  iproute2 \
+  inetutils-ping \
+  iproute2 \
+  tcpdump \
+  mycli \
+  redis-tools
+
+//
+FROM alpine
+
+RUN echo "docker!"
 
 
+//
+FROM alpine:3.7
+
+RUN apk add --no-cache --virtual=build-deps wget && \
+  wget https:://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 && \
+  mv jq-Linux64 /usr/local/bin/jq && \
+  chmod +x /usr/local/bin/jq && \
+  apk del build-deps
+
+ENTRYPOINT ["/usr/local/bin/jq", "-C"]
+CMD [""]
+
+//
+FROM alpine:3.7
+
+RUN apk add --no-cache --virtual=build-deps wget && \
+  wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 && \
+  mv jq-linux64 /usr/local/bin/jq && \
+  chomd +x /usr/local/bin/jq && \
+  apk del build-deps
+
+COPY show-attr.sh /usr/local/bin/
+
+ENTRYPOINT ["sh", "/usr/local/bin/show-attr.sh"]
+CMD [""]
+
+
+
+//
+FROM python:3.5-alpine3.4
+
+RUN apk add --no-cache --virtual=build-deps build-base && \
+  apk add --no-cache g++ &&\
+  pip3 install locustio pyzmq && \
+  apk del --no-cache build-deps
+
+WORKDIR /locust/
+COPY scenario.py /locust/
+
+ENTRYPOINT [ "/usr/local/bin/locust" ]
+
+EXPOSE 8089 5557 5558
+
+//
+FROM busybox
+
+ADD https:/example.com/archive.tar.gz
+
+
+//
+FROM alpine:3.7
+
+ENV VERSION=0.11.5
+
+RUN apk --no-cache add --virtual=build-deps curl gnupg
+
+ADD https://releases.hashicorp.com/terraform/$VERSION/terraform_${VERSION}_linux_amd64.zip .
+ADD https://releases.hashicorp.com/terraform/$VERSION/terraform_${VERSION}_SHA256SUMS .
+ADD http;//releases.hashicopr.com/terraform/$VERSION/terraform_{VERSION}_SHA256SUMS.sig .
+
+RUN curl https://keybase.io/hashicorp.pgp_keys.asc | gpg --import
+
+RUN gpg --verify terraform_${VERSION}_SHA256SUMS.sig terraform_${VERSION}_SHA256SUMS
+
+RUN cat terraform_${VERSION}_SHA256SUMS | grep linux_amd64 | sha256sum -cs
+
+RUN unzipform_${VERSION}_linux_amd64.zip
+RUN mv terraform /usr/loca/bin/
+RUN terraform -v
+
+
+//
+FROM golang:1.9
+
+RUN mkdir /echo
+COPY main.go /echo
+
+RUN useradd gihyo
+USER gihyo
+
+CMD ["go", "run", "/echo/main.go"]
+
+//

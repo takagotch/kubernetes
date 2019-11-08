@@ -120,8 +120,101 @@ docker history ch09/entrykit:light
 docker image build -t ch09/todoapi:multi .
 docker image ls | grep todoapi | grep multi
 
+docker image build -t ch10/workspace:latest .
+docker container run --rm --name workspace -it ch10/workspace:latest bash
+kubectl run -i --rm --tty workspace --image=ch10/workspace:latest --restart=Never -- bash -il
+
+docker container run --rm -i hadolint/hadolint < Dockerfile
+
+docker image built -t ch10/jq:latest .
+docker image tag ch10/jq:latest ch10/jq:1.5
+echo '{"version":100}' | jq '.version'
+echo '{"version":100}' | docker container urn -i --rm ch10/jq:1.5 '.version'
+alias jq1.5='docker container run -i --rm ch10/jq:1.5'
+
+docker image build -t ch10/show-attr:latest .
+docker container run ch10/show-attr:latest takagotch
+
+docker image build -t ch10/locust:latest .
+docker container exec -it manager\
+  docker network create --driver=overlay --attachable loadtest
+
+docker container exec -it manager docker stack deploy -c /stack/ch10-target.yml target
+docker image tag ch10/locust:latest localhost:5000/ch10/locust:latest
+docker image push localhost:5000/ch10/locust:latest
+
+/usr/local/bin/locust -f scenario.py -H http://target_echo:8080
+docker container exec -it manager docker stack deploy -c /stack/ch10-locust.yml locust
+
+docker container exec -it manager docker stack rm locust
+docker container exec -it manager \
+docker stack deply -c /stack/ch10-locust.yml locust
+
+// dckerhub
+docker search nginx
+
+docker container run -it --net host --pid host --userns host \
+	--cap-add audit_control \
+	-e DOCKER_CONTENT_TRUST=1 \
+	-v /var/lib:/var/lib \
+	-v /var/run/docker.socke: /var/run/docker.sock \
+	-v /usr/lib/systemd:/usr/lib/systemd \
+	-v /etc:/etc --label docker_bench_security \
+        docker/docker-bench-security
+
+docker exec -it xxx bash
 
 
+cat << EOF > /etc/systemd/system/docker-container@registry.service
+EOF
+
+systemctl enable docker-container@registry.service
+systemctl start docker-container@registry.service
+
+docker contaienr ls
+curl http://localhost:500/v1/_catalog
+
+docker image pull alpine:3.7
+
+docker image tag alpine:3.7 localhost:5000/gihyo/alpine:3.7
+
+docker image push localhost:5000/gihyo/alpine:3.7
+
+docker image pull gihyo-registry:5000/gihyo/alpine:3.7
+cat << EOF > /etc/docker/daemon.json
+EOF
+docker image pull gihyo-registry:5000/gihyo/alpine:3.7
+
+// helm
+heml init
+helm init --service-account tiller --node-selectors system --history-max 10
+helm init --upgrade
+
+helm version
+helm create chartname
+helm lint chartname
+helm package chartname
+helm package chartname --version 0.2.0 -d ./dist
+helm repo list
+helm repo add takagotch-stable https://takagotchdocker.github.io/charts/stable
+helm repo remove takagotch-stable
+helm repo update
+helm search redis
+helm search ^redis --regexp
+helm search ^redis --repexp --version
+helm fetch stable/redis
+helm fetch stable/redis --version 3.6.0
+helm serve
+helm install stable/redis --name takagotch-redis
+helm install stable/redis --version 3.6.0 --name takagotch-redis --namespace takagotch -f ./takagotch-redis.yaml
+helm upgrade takagotch-redis stable/redis
+helm upgrade takagotch-redis stable/redis --version 3.6.0 -f ./takagotch-redis.yaml
+helm list --namespace kube-system
+helm list --deleted
+helm get takagotch-redis
+helm get takagotch-redis --revision 2
+helm delete takagotch-redis
+helm del --purge takagotch-redis
 
 
 
