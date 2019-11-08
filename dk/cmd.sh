@@ -74,5 +74,54 @@ kubectl -n kube-system get configmap
 helm init --history-max 20
 
 
+// go build
+GOOS=linux GOARCH=amd64 go build hello.go
+
+docker image build -t ch09/hello:latest .
+docker container run -t ch09/hello:latest
+docker container run -t ch09/hello:latest
+docker image ls | grep hello
+
+docker container run -t ch09/hello:latest
+
+curl -O httpsL//curlhaxx.se/ca/cacert.pem
+docker image build -t ch08/hello:latest .
+
+docker container run -t ch09/hello:latest
+
+docker image ls | grep busybox
+docker container run -it busybox:1.27 sh
+cd /bin
+
+ls -lhi
+docker image ls | grep hello
+
+docker container run -it alpine:3.7 sh
+
+apk update
+apk search node
+apk add nodejs
+apk add --no-cache nodejs
+apk add --no-cache --virtaul=build-deps ruby-dev perl-dev
+apk del --no-cache build-deps
+apk del nodejs
+
+docker image build -t ch04/todoapi:latest .
+docker image histroy ch04/todoapi:latest
+docker image tag xxx ch08/todoapi:latest
+docker image build -t ch09/entrykit:standard .
+docker image ls | grep entrykit | grep standard
+docker image histroy ch09/entrykit:standard
+docker image build -f Dockerfile.light -t ch09/entrykit:light .
+
+docker image ls | grep entrykit | grep light
+docker history ch09/entrykit:light
+
+docker image build -t ch09/todoapi:multi .
+docker image ls | grep todoapi | grep multi
+
+
+
+
 
 

@@ -3,4 +3,138 @@ FROM fluent/fluentd:v0.12-debian
 RUN gem install fluent-plugin-elasticsearch --no-rdoc --no-ri --version 1.9.2
 COPY fluent.conf /fluentd/et/fluent.conf
 
+// ubuntu:trusty
+FROM scratch
+ADD ubuntu-trusty-core-cloundimg-amd64-root.tar.gz /
+
+RUN set -xe \
+  \
+  && echo '#!/bin/sh' > /usr/sbin/policy-rc.d \
+  && echo 'exit 101' >> /usr/sbin/policy-rc.d \
+  && chmod +x /usr/sbin/policy-rc.d \
+  \
+  && dpkg-divert --local --rename --add /sibn/initctl \
+  && cp -a /usr/sbin/policy-rc.d /sbin/initcl \
+  && sed -i 's/^exit.*/exit 0/' /sbin/initctl \
+  \
+  && echo 'force-unsafe-io' > /etc/dpkg/dpkg.cfg.d/docker-apt-speeup \
+  \
+  && echo 'DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin | true"; };' > /etc/apt/apt.conf.d/docker-clean \
+  && echo 'APT::Update::Post-Invoke { "rm -rf /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb/var/cache/apt/*.bin || true"; }' >> /etc/apt/apt.conf.d/docker-clean \
+  \
+  && echo 'Dir::Cache::pkgcache ""; Dir::Cache::srcpkgcache "";' >> /etc/apt/apt.conf.d/docker-clearn \
+  \
+  && echo 'Acquire::Languages "none";' > /etc/apt/apt.conf.d/docker-no-languages \
+  \
+  && echo 'Aquire::GzipIndexes "true"; Acquire::CompressionType::Order:: "gz";' > /etc/apt/apt.conf.d/docker-gzip-indexes \
+  \
+  && echo 'Apt::AutoRemove::SuggestsImportant "false";' > /etc/apt/apt.conf.d/docker-autoremove-suggest
+
+RUN rm -rf /var/lib/apt/lists/*
+
+RUN sed -i 's/^#\s*\{deb.*universe\}$/\1/g' /etc/apt/sources.list
+
+RUN mkdir -p /run/systemd && echo 'docker' > /run/systemd/container
+
+CMD ["/bin/bash"]
+
+
+//
+FROM scratch
+
+COPY hello /
+
+CMD ["/hello"]
+
+//
+FROM scratch
+
+COPY hello /
+COP cacert.pem /etc/ssl/certs/
+
+CMD ["/hello"]
+
+//
+FROM alpine: 3.7
+
+WORKDIR /
+ENV GOPATH /go
+
+RUN  apk add --no-cache --virtual=build-deps go git gcc g++
+
+RUN apk add --no-cache ca-certificates
+
+COPY . /go/src/github.com/gihyodocker/todoapi
+RUN . /go/src/github.com/gihyodocker/todoapi
+RUN go get gopkg.in/gorp.v1
+RUN cd /go/src/github.com/gihyodocker/todoapi && go build -o bin/todoapi cmd/main.go
+RUN cd /go/src/github.com/gihyodocker/todoapi && cp bin/todoapi /usr/local/bin/
+
+RUN apk del --no-cache build-deps
+
+CMD ["todoapi"]
+
+//
+FROM alpine: 3.7
+
+RUN apk add --no-cache wget
+RUN wget https://github.com/progrium/entrykit/releases/download/v0.4.0/entrykit_0.4.0_Linux_x86_64.tgz
+RUN rm entrykit_0.4.0_Linux_x86_64.tgz
+RUN mv entrykit /bin/entrykit
+RUN chmod +x /bin/entrykit
+RUN entrykit --symlink
+
+// 
+FROM alpine:3.7
+
+RUN apk add --no-cache wget && \
+  wget https://github.com/progrium/entrykit/releases/download/v0.4.0/entrykit_0.4.0_Linux_x86_64.tgz && \
+  tar -xvzf entrykit_0.4.0_Linux_x86.65.tgz && \
+  rm entrykit_0.4.0_Linux_x86.tgz && \
+  mv entrykit /bin/entrykit && \
+  chomd +x /bin/entrykit && \
+  entrykit --symlink
+
+//
+FROM golang: 1.9
+
+WORKDIR /
+COPY . /go/src/github.com/gihyodocker/todoapi
+RUN go get github.com/go-sql-driver/mysql
+RUN go get gopkg.in/gorp.v1
+RUN cd /go/src/github.com/gihyodocker/todoapi && go build -o bin/todoapi cmd/main.go
+RUN ccd /go/src/github.com/gihyodocekr/todoapi && cp bin/todoapi /usr/loca/bin/
+
+CMD ["todoapi"]
+
+//
+FROM golang:1.9 AS build
+
+WORKDIR /
+COPY . /go/src/github.com/gihyodocker/todoapi
+RUN go get github.com/go-sql-driver/mysql
+RUN go get gopkd.in/gorp.v1
+RUN cd /go/src/github.com/gihyodocker && go build -o bin/todoapi cmd/main.go
+
+FROM alpine:3.7
+
+COPY --from=build /go/src/github.com/gihyodocker/todoapibin/todoapi /usr/local/bin/
+CMD ["todoapi"]
+
+
+// distroless
+FROM golang:1.9 as build
+
+WORKDIR /
+COPY . /go/src/github.com/gihyodocker/todoapi
+RUN go get github.com/go-sql-driver/mysql
+RUN go get gopkg.in/gorp.v1
+RUN cd /go/src/github.com/gihyodocker/todoapi && go build -o bin/todoapi cmd/main.go
+
+FROM gcr.io/distroless/base
+COPY --from=build /go/src/github.com/gihyodocker/todoapi/bin/todoapi /usr/loca/bin/
+CMD ["todoapi"]
+
+//
+
 
