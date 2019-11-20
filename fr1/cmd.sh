@@ -125,5 +125,22 @@ contrib/inventory_builder/inventory.py ${IPS[@]}
 ansible-playbook -i inventory/mycluster/hosts.ini cluster.yml
 kubectl get nodes
 
+kubectl apply -f job.yaml
+kubectl logs -l app=pingpong
+kubectl get pod -l app=pingpong --show-all
+
+kubectl apply -f cronjob.yaml
+kubectl get job -l app=pingpong
+kubectl logs -l app=pingpong
+echo "your_username:$(openssl passwd -quiet -crypt your_password)" | base64
+
+kubectl apply -f nginx-secret.yaml
+
+kubectl apply -f basic-auth.yaml
+curl http://127.0.0.1:30060
+curl -i --user your_name:your_password http://127.0.0.1:30060
+
+echo -n "" | base64
+echo -n "" | base64
 
 
