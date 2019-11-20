@@ -73,3 +73,57 @@ kubectl get pod -l app=nginx -w
 kubectl api-version
 
 
+gcloud components update
+gcloud auth login
+gclound config set project takagotch-kube-xxx
+gclound config set compute/zone asia-norgheast1-a
+gclound container clusters create takagotch --cluster-version=1.10.4-gke.2 \
+	--machine-type=n1-standard-1 \
+	--num-nodes=3
+gclound container clusters get-credentials takagotch
+kubectl get nodes
+kubectl proxy
+kubectx docker-for-desktop
+kubectx -
+kubens kube-system
+kubectl get pod
+
+kubectl apply -f storage-class-ssd.yaml
+
+kubectl apply -f mysql-slave.yaml
+kubectl get pod
+kubectl exec -it mysql-master-0 init-data.sh
+kubectl exec -it mysql-slave-0 bash
+
+kubectl apply -f todo-api.yaml
+kubectl get pod -l app=todoapi
+
+kubectl apply -f todo-web.yaml
+
+cp -R /todoweb/.nuxt/dist /
+ls -l /dist
+ls -l /var/www/_nuxt/
+kubectl get svc todoweb
+kubectl apply -f ingress.yaml
+kubectl get ingress
+
+ssh-keygen -t rsa
+echo "" >> ~/.ssh/authorized_keys
+echo "" >> ~/.ssh/authorized_keys
+echo "" >> ~/.ssh/authorized_keys
+echo "" >> ~/.ssh/authorized_keys
+
+sysctl -w net.ipv4.ip_forward=1
+pip install ansible netaddr
+cd kubespray && git checkout v2.5.0
+pip install -r requirements.txt
+cp -rfp inventory/sample inventory/mycluster
+declare -a IPS=(10.90.65.11.10 10.90.65.12 10.90.13 10.90.65.21)
+CONFIG_FILE=inventory/mycluster/hosts.ini python3
+contrib/inventory_builder/inventory.py ${IPS[@]}
+
+ansible-playbook -i inventory/mycluster/hosts.ini cluster.yml
+kubectl get nodes
+
+
+
