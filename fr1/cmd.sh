@@ -143,4 +143,38 @@ curl -i --user your_name:your_password http://127.0.0.1:30060
 echo -n "" | base64
 echo -n "" | base64
 
+kubectl create serviceaccount takagotch-user
+kubectl get serviceaccount takagotch-user -o yaml
+kubectl get secret takagotch-user-token-dwwmp -o yaml
+echo '' | base64 -D 
+kubectl config view
+kubectl config set-context takagotch-k8s-takagotch-user --cluster=takagotch-k8s --user-takagotch-user
+kubectl config use-context takagotch-k8s-takagotch-user
+kubectl get pod --all-namespaces
+kubectl get deployment -all-namespaces
+kubectl config use-context docker-for-desktop
+
+kubectl -n kube-system logs -f gihyo-pod-reader
+kubectl -n kube-system logs -f takagotch-pod-reader
+
+kubectl logs -f update-checker
+kubectl patch deployment echo-version \
+	-p ''
+	deployment "" patched
+
+kubectl get pod -l app=echo-version -w
+
+kubectl describe pod -l app=echo-version
+kubectl get pod -l app=echo-version
+kubectl get pod -l app=echo-version
+kubectl logs -f update-checker
+
+kubectl apply -f echo-version-send.yaml
+kubectl apply -f echo-version-receive.yaml
+kubectl logs -f update-checker
+kubectl patch service echo-version -p '{"spec": {"selector": {"color": "green"}}}'
+
+
+
+
 
