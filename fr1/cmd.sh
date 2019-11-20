@@ -30,6 +30,46 @@ kubectl get pod,replicaset,deployment --selector app=echo
 kubectl rollout history deployment echo
 kubectl apply -f simple-deployment.yaml --record
 
+kubectl get pod
+kubectl rollout history deployment echo
+kubectl apply -f deployment.yaml --record
+kubectl get pod --selector app=echo
+kubectl rollout history deployment echo
+kubectl rollout undo deployment echo
+kubectl delete -f deployment.yaml
 
+kubectl apply -f replicaset-with-label.yaml
+kubectl get pod -l app=echo -l release=spring
+kubectl get pod -l app=echo -l release=summer
+
+kubectl apply -f service.yaml
+kubectl get svc echo
+kubectl run -i --rm --tty debug --image=takagotch/fundamental:0.1.0 --restart=Never -- bash -il
+kubectl logs -f echo-summer-dtblk -c echo
+curl http://echo.default.svc.local
+curl http://echo.default
+curl http://echo
+
+kubectl get svc echo
+curl http://127.0.0.1:31058
+
+kubectl get svc echo
+curl http://127.0.0.1:31058
+
+kubectl apply -f \ https://xxx
+kubectl -n ingress-nginx get service,pod
+kubectl apply -f ingress.yaml
+kubectl get ingress.yaml
+curl http://localhost -H 'Host: ch05.takagotch.local'
+
+curl http://localhost \
+	-H '' \
+	-H '' 
+kubectl apply -f https://xxx
+
+kubectl get pod -l app=nginx -w
+docker image build -t takagotch/nginx:latest .
+kubectl get pod -l app=nginx -w
+kubectl api-version
 
 
