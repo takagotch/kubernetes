@@ -15,6 +15,7 @@ kubectl get nodes
 
 kubectl get namespace
 
+kubectl apply -f pod.yaml
 
 
 
