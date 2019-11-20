@@ -16,6 +16,20 @@ kubectl get nodes
 kubectl get namespace
 
 kubectl apply -f pod.yaml
+kubectl get pod
+kubectl exec -it echo sh -c nginx
+kubectl logs -fecho -c echo
+kubectl delete pod echo
+kubectl delete -f pod.simple
+
+
+kubectl spply -f replicast.yaml
+
+kubectl apply -f deployment.yaml --record
+kubectl get pod,replicaset,deployment --selector app=echo
+kubectl rollout history deployment echo
+kubectl apply -f simple-deployment.yaml --record
+
 
 
 
