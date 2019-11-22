@@ -154,4 +154,16 @@ EOF
 
 
 
+kubectl config use-context docker-for-desktop
+helm init
+
+kubectl -n kube-system get service,deployment,pod --selector app=helm
+helm version
+helm init
+export TILLER_TAG=2.9.0
+kubectl --namespace=kube-system set image deployments/tiller-deploy \
+	tiller=gcr.io/kubernetes-helm/tiller:$TILLER_TAG
+
+
+
 
