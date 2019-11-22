@@ -116,7 +116,16 @@ kubectl logs -l app=tky
 
 echo "your_username:$(openssl passwd -quiet -crypt your_password)" | base64
 
+kubectl apply -f nginx-secret.yaml
 
+kubectl apply -f basic-auth.yaml
+curl http://127.0.0.1:30060
+curl -i --user tky:pswd http://127.0.0.1:30060
+
+echo -n "takagotch:takagotch@tcp(mysql-master:3306)/tododb?parseTime=true" | base64
+echo -n "takagotch:takagotch(mysql-slave:3306)/tododb?parseTime=true" | base64
+
+kubectl describe pod todoapi-xxx
 
 
 
