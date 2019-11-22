@@ -1,0 +1,26 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: tky
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+	  labels:
+	    app: tky
+	spec:
+	  containers:
+	  - name: tky
+	    image: takagotch/alpine:bash
+	    command: ["/bin/sh"]
+	    args:
+	     - "-c"
+	     - |
+	       echo [`date`] ping!
+	       sleep 10
+	       echo [`date`] pong!
+	restartPolicy: OnFailure
+
+

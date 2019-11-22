@@ -106,5 +106,17 @@ contrib/inventory_builder/inventory.py $(IPS[@])
 ansible-playbook -i inventory/mycluster/hosts.ini cluster.yml
 kubectl get nodes
 
+kubectl apply -f job.yaml
+kubectl logs -l app=tky
+kubectl get pod -l app=tky --show-all
+
+kubectl apply -f cronjob.yaml
+kubectl get job -l app=tky
+kubectl logs -l app=tky
+
+echo "your_username:$(openssl passwd -quiet -crypt your_password)" | base64
+
+
+
 
 
