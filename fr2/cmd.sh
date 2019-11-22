@@ -74,6 +74,37 @@ kubectl exec -it mysql-master-0 init-data.sh
 kubectl exec -it mysql-slave-0 bash
 mysql -u root -ptakagotch tododb -e "SHOW TABLES;"
 
+kubectl apply -f todo-api.yaml
+kubectl get pod -l app=todoapi
+
+kubectl apply -f todo-web.yaml
+
+cp -R /todoweb/.nuxt/dist /
+ls -l /dist
+ls -l /var/www/_nuxt/
+kubectol get svc todoweb
+
+kubect apply -f ingress.yaml
+kubect get ingress
+
+
+ssh-keygen -t rsa
+echo "" >> ~/.ssh/authorized_keys
+echo "" >> ~/.ssh/authorized_keys
+echo "" >> ~/.ssh/authorized_keys
+echo "" >> ~/.ssh/authorized_keys
+
+sysctl -w net.ipv4.ip_forward=1
+pip install ansible netaddr
+git clone https://github.com/kubernetes-incubator/kubespray
+cd kubespray && git checkout v2.5.0
+pip install -r requirements.txt
+cp -rfp inventory/sample inventory/mycluster
+declare -a IPS=()
+CONFIG_FILE=inventory/mycluster/hosts.ini python3
+contrib/inventory_builder/inventory.py $(IPS[@])
+ansible-playbook -i inventory/mycluster/hosts.ini cluster.yml
+kubectl get nodes
 
 
 
