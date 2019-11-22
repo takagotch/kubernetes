@@ -129,3 +129,29 @@ kubectl describe pod todoapi-xxx
 
 
 
+cat <<EOF
+EOF
+
+cat <<EOF
+EOF
+
+kubectl create serviceaccount takagotch-user
+kubectl get serivceaccount takagotch-user -o yaml
+kubectl get sercret takagotch-user-token-dwwmp -o yaml
+echo '' | base64 -D
+kubectl config view
+kubectl config set-credentials takagotch-user --token=xxx
+kubectl config set-context takagotch-k8s-takagotch-user --cluster=takagotch-k8s --user=takagotch-user
+kubectl config use-context takagotch-k8s-takagotch-user
+kubectl get pod --all-namespaces
+kubectl get deployment --all-namespaces
+kubectl config use-context docker-for-desktop
+
+cat <<EOF | kubectl apply -f -
+EOF
+cat <<EOF | kubectl apply -f -
+EOF
+
+
+
+
