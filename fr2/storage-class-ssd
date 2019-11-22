@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-example
+spec:
+  accessModes:
+   - ReadWriteOnce
+  storageClassName: ssd
+  resources:
+    requests:
+      storage: 4Gi
+
+
+
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: ssd
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"
+  labels:
+    kubernetes.io/cluster-service: "true"
+proxisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+
+
+
+
